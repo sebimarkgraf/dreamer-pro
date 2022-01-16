@@ -6,12 +6,10 @@ import pathlib
 import sys
 import warnings
 import time
+import wandb
 
-try:
-  import rich.traceback
-  rich.traceback.install()
-except ImportError:
-  pass
+wandb.init(sync_tensorboard=True)
+
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 logging.getLogger().setLevel('ERROR')
