@@ -32,7 +32,8 @@ class Driver:
     while step < steps or episode < episodes:
       for i, done in enumerate(self._dones):
         if done:
-          self._obs[i] = ob = self._envs[i].reset()
+          ob, info = self._envs[i].reset()
+          self._obs[i] = ob
           act = {k: np.zeros(v.shape) for k, v in self._actspaces[i].items()}
           tran = {**ob, **act, 'reward': 0.0, 'discount': 1.0, 'done': False}
           [callback(tran, **self._kwargs) for callback in self._on_resets]
