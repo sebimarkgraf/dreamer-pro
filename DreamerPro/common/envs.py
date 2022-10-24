@@ -7,6 +7,7 @@ import numpy as np
 import common
 
 import distractor_dmc2gym as dmc2gym
+from gym.wrappers import StepAPICompatibility
 
 
 class ActDictWrapper(gym.ActionWrapper):
@@ -51,6 +52,8 @@ def make_alr_env(task):
   )
   env = ObsDictWrapper(env)
   env = ActDictWrapper(env)
+  env = StepAPICompatibility(env, output_truncation_bool=False)
+
   return env
 
 class DMC:
