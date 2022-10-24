@@ -71,7 +71,9 @@ should_video_eval = elements.Every(config.eval_every)
 
 def make_env(mode):
   suite, task = config.task.split('_', 1)
-  if suite == 'dmc':
+  if suite == 'alr':
+    env = common.make_alr_env(task)
+  elif suite == 'dmc':
     env = common.DMC(task, config.action_repeat, config.image_size)
     env = common.NormalizeAction(env)
   elif suite == 'nat':
