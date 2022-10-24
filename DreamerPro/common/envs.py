@@ -6,6 +6,52 @@ import numpy as np
 
 import common
 
+import distractor_dmc2gym as dmc2gym
+
+
+class ActDictWrapper(gym.ActionWrapper):
+  def __init__(self, env):
+    super().__init__(env)
+    self.action_space = gym.spaces.Dict({'action': env.action_space})
+
+
+  def action(self, action):
+    return {"action": action}
+
+  def reverse_action(self, action):
+    return action["action"]
+
+
+class ObsDictWrapper(gym.ObservationWrapper):
+  def __init__(self, env):
+    super().__init__(env)
+    self.observation_space = gym.spaces.Dict({
+      'image': gym.spaces.Box(0, 255, env.observation_space.shape, dtype=np.uint8)})
+
+  def observation(self, observation):
+    return {"image": observation}
+
+
+
+def make_alr_env(task):
+  domain_name, task_name = task.split('_', 1)
+  env = dmc2gym.make(
+    domain_name=domain_name,
+    task_name=task_name,
+    frame_skip=2,
+    height=64,
+    width=64,
+    camera_id=0,
+    from_pixels=True,
+    environment_kwargs=None,
+    visualize_reward=False,
+    channels_first=True,
+    distraction_source='dots',
+    distraction_location='background'
+  )
+  env = ObsDictWrapper(env)
+  env = ActDictWrapper(env)
+  return env
 
 class DMC:
 
