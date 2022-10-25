@@ -25,10 +25,10 @@ class ActDictWrapper(gym.ActionWrapper):
         self.action_space = gym.spaces.Dict({'action': env.action_space})
 
     def action(self, action):
-        return {"action": action}
+        return action["action"]
 
     def reverse_action(self, action):
-        return action["action"]
+        return {"action": action}
 
 
 class ObsDictWrapper(gym.ObservationWrapper):
