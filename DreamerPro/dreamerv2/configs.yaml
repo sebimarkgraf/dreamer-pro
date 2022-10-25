@@ -134,7 +134,12 @@ reward_1000:
   loss_scales.reward: 1000.0
 
 debug:
-
+  rssm: {hidden: 10, deter: 10, num_prototypes: 10}
+  encoder: {depth: 4}
+  reward_head: {layers: 2, units: 10}
+  discount_head: { layers: 2, units: 10 }
+  actor: {layers: 2, units: 10}
+  critic: {layers: 2, units: 10}
   jit: False
   time_limit: 100
   eval_every: 300

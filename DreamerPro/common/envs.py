@@ -33,6 +33,7 @@ class ObsDictWrapper(gym.ObservationWrapper):
 
 
 def make_alr_env(task):
+    print("Making ALR ENV")
     domain_name, task_name = task.split('_', 1)
     env = dmc2gym.make(
         domain_name=domain_name,
@@ -44,7 +45,7 @@ def make_alr_env(task):
         from_pixels=True,
         environment_kwargs=None,
         visualize_reward=False,
-        channels_first=True,
+        channels_first=False,
         distraction_source='dots',
         distraction_location='background'
     )
@@ -322,31 +323,6 @@ class Dummy:
         return obs
 
 
-class TimeLimit:
-
-    def __init__(self, env, duration):
-        self._env = env
-        self._duration = duration
-        self._step = None
-
-    def __getattr__(self, name):
-        return getattr(self._env, name)
-
-    def step(self, action):
-        assert self._step is not None, 'Must reset environment.'
-        obs, reward, done, info = self._env.step(action)
-        self._step += 1
-        if self._step >= self._duration:
-            done = True
-            if 'discount' not in info:
-                info['discount'] = np.array(1.0).astype(np.float32)
-            self._step = None
-        return obs, reward, done, info
-
-    def reset(self):
-        self._step = 0
-        return self._env.reset()
-
 
 class NormalizeAction:
 
@@ -417,48 +393,36 @@ class RewardObs(gym.Wrapper):
         super().__init__(env)
         assert key not in env.observation_space.spaces
         self._key = key
-
-    def __getattr__(self, name):
-        return getattr(self.env, name)
-
-    @property
-    def observation_space(self):
-        space = gym.spaces.Box(-np.inf, np.inf, (), dtype=np.float32)
-        return gym.spaces.Dict({
-            **self.env.observation_space.spaces, self._key: space})
+        reward_space = gym.spaces.Box(-np.inf, np.inf, (), dtype=np.float32)
+        self.observation_space = {
+            **env.observation_space.spaces, self._key: reward_space
+        }
 
     def step(self, action):
         obs, reward, *others = self.env.step(action)
-        obs['reward'] = reward
-        return (obs, reward, *others)
+        return {**obs, 'reward': reward}, reward, *others
 
-    def reset(self):
-        obs, info = self.env.reset()
-        obs['reward'] = 0.0
-        return obs, info
+    def reset(self, **kwargs):
+        obs, info = self.env.reset(**kwargs)
+        return {**obs, 'reward': 0.0}, info
 
 
 class ResetObs(gym.Wrapper):
     def __init__(self, env, key='reset'):
         super().__init__(env)
-        assert key not in env.observation_space.spaces
+        assert key not in env.observation_space
         self._key = key
-
-    def __getattr__(self, name):
-        return getattr(self.env, name)
-
-    @property
-    def observation_space(self):
-        space = gym.spaces.Box(0, 1, (), dtype=np.bool)
-        return gym.spaces.Dict({
-            **self.env.observation_space.spaces, self._key: space})
+        self.observation_space = gym.spaces.Dict({
+            **self.env.observation_space,
+            self._key: gym.spaces.Box(0, 1, (), dtype=np.bool)
+        })
 
     def step(self, action):
-        obs, *others = self._env.step(action)
+        obs, *others = self.env.step(action)
         obs['reset'] = np.array(False, np.bool)
         return (obs, *others)
 
     def reset(self):
-        obs, info = self._env.reset()
+        obs, info = self.env.reset()
         obs['reset'] = np.array(True, np.bool)
         return obs, info

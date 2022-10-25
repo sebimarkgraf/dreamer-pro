@@ -6,6 +6,9 @@ import pathlib
 import sys
 import warnings
 import time
+
+import gym
+
 import wandb
 
 wandb.init(sync_tensorboard=True)
@@ -89,9 +92,11 @@ def make_env(mode):
     env = common.OneHotAction(env)
   else:
     raise NotImplementedError(suite)
-  env = common.TimeLimit(env, config.time_limit)
+  env = gym.wrappers.StepAPICompatibility(env, output_truncation_bool=True)
+  env = gym.wrappers.TimeLimit(env, max_episode_steps=config.time_limit)
   env = common.RewardObs(env)
   env = common.ResetObs(env)
+  env = gym.wrappers.StepAPICompatibility(env, output_truncation_bool=False)
   return env
 
 def per_episode(ep, mode):
