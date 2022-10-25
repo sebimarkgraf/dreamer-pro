@@ -10,15 +10,6 @@ import distractor_dmc2gym as dmc2gym
 from gym.wrappers import StepAPICompatibility
 
 
-class ActionWrapper(gym.ActionWrapper):
-
-    def action(self, action):
-        return action.numpy()
-
-    def reverse_action(self, action):
-        return action
-
-
 class ActDictWrapper(gym.ActionWrapper):
     def __init__(self, env):
         super().__init__(env)
@@ -57,7 +48,6 @@ def make_alr_env(task):
         distraction_source='dots',
         distraction_location='background'
     )
-    env = ActionWrapper(env)
     env = ObsDictWrapper(env)
     env = ActDictWrapper(env)
     env = StepAPICompatibility(env, output_truncation_bool=False)
