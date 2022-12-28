@@ -16,3 +16,5 @@ tqdm
 pytube
 wandb
 git+ssh://git@github.com/sebimarkgraf/occluded_dmc.git#egg=distractor_dmc2gym
+wrap-your-gym==0.0.2
+hydra-core

@@ -46,7 +46,6 @@ config = config.update(
 
 tf.config.experimental_run_functions_eagerly(not config.jit)
 message = 'No GPU found. To actually train on CPU remove this assert.'
-assert tf.config.experimental.list_physical_devices('GPU'), message
 for gpu in tf.config.experimental.list_physical_devices('GPU'):
   tf.config.experimental.set_memory_growth(gpu, True)
 assert config.precision in (16, 32), config.precision
@@ -122,15 +121,13 @@ prefill = max(0, config.prefill - train_replay.total_steps)
 if prefill:
   print(f'Prefill dataset ({prefill} steps).')
   random_agent = common.RandomAgent(action_space)
-  train_driver(random_agent, steps=prefill, episodes=1)
-  eval_driver(random_agent, episodes=1)
+  train_driver(random_agent, episodes=1)
   train_driver.reset()
-  eval_driver.reset()
 
 print('Create agent.')
 train_dataset = iter(train_replay.dataset(**config.dataset))
-eval_dataset = iter(eval_replay.dataset(**config.dataset))
 agnt = agent.Agent(config, logger, action_space, step, train_dataset)
+
 if (logdir / 'variables.pkl').exists():
   agnt.load(logdir / 'variables.pkl')
 else:

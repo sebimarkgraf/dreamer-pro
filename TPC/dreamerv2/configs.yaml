@@ -133,4 +133,4 @@ debug:
   pretrain: 1
   train_steps: 1
   dataset.batch: 10
-  dataset.length: 10
+  dataset.length: 20

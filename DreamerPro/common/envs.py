@@ -7,37 +7,16 @@ import numpy as np
 import common
 
 import distractor_dmc2gym as dmc2gym
+from wrap_your_gym import ObsDict, ActionDict
 from gym.wrappers import StepAPICompatibility
 
 
-class ActDictWrapper(gym.ActionWrapper):
-    def __init__(self, env):
-        super().__init__(env)
-        self.action_space = gym.spaces.Dict({'action': env.action_space})
 
-    def action(self, action):
-        return action["action"]
-
-    def reverse_action(self, action):
-        return {"action": action}
-
-
-class ObsDictWrapper(gym.ObservationWrapper):
-    def __init__(self, env):
-        super().__init__(env)
-        self.observation_space = gym.spaces.Dict({
-            'image': gym.spaces.Box(0, 255, env.observation_space.shape, dtype=np.uint8)})
-
-    def observation(self, observation):
-        return {"image": observation}
-
-
-def make_alr_env(task):
+def make_alr_env(domain, task, distraction):
     print("Making ALR ENV")
-    domain_name, task_name = task.split('_', 1)
     env = dmc2gym.make(
-        domain_name=domain_name,
-        task_name=task_name,
+        domain_name=domain,
+        task_name=task,
         frame_skip=2,
         height=64,
         width=64,
@@ -46,11 +25,11 @@ def make_alr_env(task):
         environment_kwargs=None,
         visualize_reward=False,
         channels_first=False,
-        distraction_source='dots',
+        distraction_source=distraction,
         distraction_location='background'
     )
-    env = ObsDictWrapper(env)
-    env = ActDictWrapper(env)
+    env = ObsDict(env, key="image")
+    env = ActionDict(env)
     env = StepAPICompatibility(env, output_truncation_bool=False)
 
     return env
@@ -414,15 +393,15 @@ class ResetObs(gym.Wrapper):
         self._key = key
         self.observation_space = gym.spaces.Dict({
             **self.env.observation_space,
-            self._key: gym.spaces.Box(0, 1, (), dtype=np.bool)
+            self._key: gym.spaces.Box(0, 1, (), dtype=bool)
         })
 
     def step(self, action):
         obs, *others = self.env.step(action)
-        obs['reset'] = np.array(False, np.bool)
+        obs['reset'] = np.array(False, bool)
         return (obs, *others)
 
     def reset(self):
         obs, info = self.env.reset()
-        obs['reset'] = np.array(True, np.bool)
+        obs['reset'] = np.array(True, bool)
         return obs, info
