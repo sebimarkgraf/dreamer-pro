@@ -1,0 +1,4 @@
+defaults:
+  - slurm_gpu4
+
+partition: gpu_8

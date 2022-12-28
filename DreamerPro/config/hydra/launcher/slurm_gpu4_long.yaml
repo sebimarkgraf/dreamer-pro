@@ -1,0 +1,4 @@
+defaults:
+  - slurm_gpu4
+
+timeout_min: 1440

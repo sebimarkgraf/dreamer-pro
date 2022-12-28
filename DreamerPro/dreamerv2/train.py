@@ -79,7 +79,7 @@ def per_episode(ep, mode, logger, start_time, train_replay, eval_replay):
   logger.scalar(f'{mode}_eps', replay_.num_episodes)
   logger.write()
 
-@hydra.main(version_base="1.1", config_path="./", config_name="config")
+@hydra.main(version_base="1.1", config_path="./config", config_name="config")
 def main(config):
   os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
   logging.getLogger().setLevel('ERROR')

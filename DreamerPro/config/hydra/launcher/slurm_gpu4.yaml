@@ -1,0 +1,9 @@
+defaults:
+  - submitit_slurm
+
+
+timeout_min: 360
+cpus_per_task: 10
+gpus_per_node: 1
+name: ${hydra.job.name}
+partition: gpu_4
