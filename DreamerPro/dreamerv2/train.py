@@ -79,15 +79,18 @@ def per_episode(ep, mode, logger, start_time, train_replay, eval_replay):
   logger.scalar(f'{mode}_eps', replay_.num_episodes)
   logger.write()
 
-@hydra.main(version_base="1.1", config_path="./config", config_name="config")
+@hydra.main(version_base="1.1", config_path="../config", config_name="config")
 def main(config):
   os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
   logging.getLogger().setLevel('ERROR')
   warnings.filterwarnings('ignore', '.*box bound precision lowered.*')
 
   config = OmegaConf.to_container(config, resolve=True)
-  config = elements.Config(config)
+  wandb.init(project="dreamer-pro", sync_tensorboard=True, config=config)
 
+
+
+  config = elements.Config(config)
   logdir = pathlib.Path(config.logdir).expanduser()
   config = config.update(
       steps=config.steps // config.action_repeat,
@@ -99,7 +102,6 @@ def main(config):
 
 
 
-  wandb.init(sync_tensorboard=True)
 
   print('Logdir', logdir)
   train_replay = common.Replay(logdir / 'train_replay', config.replay_size)

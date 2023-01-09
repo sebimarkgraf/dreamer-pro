@@ -1,0 +1,14 @@
+steps: 1e4
+reward_head: {units: 50}
+encoder: {depth: 2, act: elu, kernels: [4, 4, 4, 4], keys: [image]}
+discount_head: {layers: 2, units: 50}
+dataset: {batch: 10, length: 10, oversample_ends: True}
+freeze_prototypes_iters: 1000
+
+actor: {layers: 2, units: 50}
+critic: {layers: 2, units: 50}
+
+expl_head: {layers: 2, units: 50}
+
+
+rssm: {hidden: 50, deter: 50}
