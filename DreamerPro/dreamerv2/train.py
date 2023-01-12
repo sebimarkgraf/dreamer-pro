@@ -3,7 +3,6 @@ import functools
 import logging
 import os
 import pathlib
-import sys
 import warnings
 import time
 
@@ -11,14 +10,10 @@ import gym
 
 import wandb
 
-sys.path.append(str(pathlib.Path(__file__).parent))
-sys.path.append(str(pathlib.Path(__file__).parent.parent))
-
 import numpy as np
-import ruamel.yaml as yaml
 import tensorflow as tf
 
-import agent
+import dreamerv2.agent as agent
 import elements
 import common
 import hydra
