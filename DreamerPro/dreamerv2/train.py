@@ -37,8 +37,8 @@ def make_env(mode, config):
   if suite == 'alr':
     distraction = config.env.distraction
     env = common.make_alr_env(domain, task, distraction)
-  elif suite == 'mbrl':
-    env = common.make_mbrl_env(domain, task, config.env.distraction)
+  elif suite == 'mbrl_envs':
+    env = common.make_mbrl_env(domain, task, config.distraction.type, seed=config.seed, image_size=config.image_size, distraction_location=config.distraction.location)
   elif suite == 'dmc':
     env = common.DMC(task, config.action_repeat, config.image_size)
     env = common.NormalizeAction(env)

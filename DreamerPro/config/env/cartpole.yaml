@@ -1,3 +1,2 @@
-suite: alr
+suite: mbrl_envs
 task: cartpole-swingup
-distraction: null

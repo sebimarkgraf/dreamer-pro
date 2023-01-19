@@ -1,6 +1,10 @@
 defaults:
   - env: cartpole
 
+distraction:
+  type: null
+  location: "background"
+
 logdir: ./logdir
 seed: 0
 num_envs: 1
@@ -14,9 +18,6 @@ precision: 16
 jit: True
 
 # Natural Background
-bg_path_train: '../kinetics400/videos/train'
-bg_path_test: '../kinetics400/videos/test'
-random_bg: False
 max_videos: 100
 
 # Agent
@@ -65,10 +66,6 @@ disag_action_cond: True
 expl_model_loss: kl
 
 
-env:
-  suite: alr
-  task: cartpole-swingup
-  distraction: dots_pendulum
 time_limit: 1000
 action_repeat: 2
 eval_every: 1e4

@@ -12,28 +12,17 @@ from gym.wrappers import StepAPICompatibility
 import mbrl_envs
 
 
-def make_mbrl_env(domain, task, distraction):
+def make_mbrl_env(domain, task, distraction, seed, image_size, distraction_location):
     print("Making MBRL ENV")
     env = mbrl_envs.make(domain_name=domain,
                          task_name=task,
-                         seed=0,
-                         action_repeat=1,
+                         seed=seed,
+                         action_repeat=2,
                          obs_type=mbrl_envs.ObsTypes.IMAGE,
+                         img_size=image_size,
+                         distraction_location=distraction_location,
+                         distraction_type=distraction,
                          no_lists=True)
-    env = dmc2gym.make(
-        domain_name=domain,
-        task_name=task,
-        frame_skip=2,
-        height=64,
-        width=64,
-        camera_id=0,
-        from_pixels=True,
-        environment_kwargs=None,
-        visualize_reward=False,
-        channels_first=False,
-        distraction_source=distraction,
-        distraction_location='background'
-    )
     env = ObsDict(env, key="image")
     env = ActionDict(env)
     env = StepAPICompatibility(env, output_truncation_bool=False)
