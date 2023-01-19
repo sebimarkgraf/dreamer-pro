@@ -4,7 +4,7 @@ from tensorflow.keras import mixed_precision as prec
 
 import elements
 import common
-import expl
+import dreamerv2.expl as expl
 
 
 class Agent(common.Module):

@@ -15,6 +15,7 @@ tqdm
 pytube
 wandb
 git+ssh://git@github.com/sebimarkgraf/occluded_dmc.git#egg=distractor_dmc2gym
+git+ssh://git@github.com/ALRhub/mbrl_envs.git#egg=mbrl_envs
 wrap-your-gym==0.0.2
 hydra-core
 hydra-submitit-launcher

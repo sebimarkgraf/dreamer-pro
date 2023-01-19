@@ -9,6 +9,36 @@ import common
 import distractor_dmc2gym as dmc2gym
 from wrap_your_gym import ObsDict, ActionDict
 from gym.wrappers import StepAPICompatibility
+import mbrl_envs
+
+
+def make_mbrl_env(domain, task, distraction):
+    print("Making MBRL ENV")
+    env = mbrl_envs.make(domain_name=domain,
+                         task_name=task,
+                         seed=0,
+                         action_repeat=1,
+                         obs_type=mbrl_envs.ObsTypes.IMAGE,
+                         no_lists=True)
+    env = dmc2gym.make(
+        domain_name=domain,
+        task_name=task,
+        frame_skip=2,
+        height=64,
+        width=64,
+        camera_id=0,
+        from_pixels=True,
+        environment_kwargs=None,
+        visualize_reward=False,
+        channels_first=False,
+        distraction_source=distraction,
+        distraction_location='background'
+    )
+    env = ObsDict(env, key="image")
+    env = ActionDict(env)
+    env = StepAPICompatibility(env, output_truncation_bool=False)
+
+    return env
 
 
 

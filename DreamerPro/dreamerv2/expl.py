@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow_probability import distributions as tfd
 
-import agent
+import dreamerv2.agent as agent
 import common
 
 
