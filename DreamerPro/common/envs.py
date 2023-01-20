@@ -22,7 +22,10 @@ def make_mbrl_env(domain, task, distraction, seed, image_size, distraction_locat
                          img_size=image_size,
                          distraction_location=distraction_location,
                          distraction_type=distraction,
-                         no_lists=True)
+                         no_lists=True,
+                         distractor_paths={
+                             "kinetics400": "/home/sebbo/Projekte/dreamer-pro/background/kinetics400"
+                         })
     env = ObsDict(env, key="image")
     env = ActionDict(env)
     env = StepAPICompatibility(env, output_truncation_bool=False)
