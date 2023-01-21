@@ -1,5 +1,6 @@
 import os
 import threading
+from pathlib import Path
 
 import gym
 import numpy as np
@@ -11,6 +12,9 @@ from wrap_your_gym import ObsDict, ActionDict
 from gym.wrappers import StepAPICompatibility
 import mbrl_envs
 
+
+
+background_path = Path(__file__).parent / ".." / ".." / "background"
 
 def make_mbrl_env(domain, task, distraction, seed, image_size, distraction_location):
     print("Making MBRL ENV")
@@ -24,7 +28,8 @@ def make_mbrl_env(domain, task, distraction, seed, image_size, distraction_locat
                          distraction_type=distraction,
                          no_lists=True,
                          distractor_paths={
-                             "kinetics400": "/home/sebbo/Projekte/dreamer-pro/background/kinetics400"
+                             "kinetics400": str(background_path / "kinetics400"),
+                             "pre_rendered_disks_medium": str(background_path / "disks_medium")
                          })
     env = ObsDict(env, key="image")
     env = ActionDict(env)
